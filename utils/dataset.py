@@ -44,6 +44,55 @@ class WaymoParser:
             self.frames.append(frame)
 
 
+class KITTIParser:
+    """KITTI Odometry dataset parser."""
+    def __init__(self, input_folder, pose_file=None):
+        self.input_folder = input_folder
+        # KITTI uses image_2 for left color camera
+        self.color_paths = sorted(glob.glob(f"{self.input_folder}/image_2/*.png"))
+        if len(self.color_paths) == 0:
+            # Try alternative structure (just images in folder)
+            self.color_paths = sorted(glob.glob(f"{self.input_folder}/*.png"))
+        self.depth_paths = []  # KITTI doesn't have depth, will be estimated
+        self.n_img = len(self.color_paths)
+        if pose_file and os.path.exists(pose_file):
+            self.load_poses(pose_file)
+        else:
+            # Initialize with identity poses if no ground truth
+            self.poses = [np.eye(4) for _ in range(self.n_img)]
+            self.frames = [{"file_path": p, "transform_matrix": np.eye(4).tolist()}
+                          for p in self.color_paths]
+
+    def load_poses(self, path):
+        """Load KITTI format poses (12 values per line: 3x4 matrix flattened)."""
+        self.poses = []
+        self.frames = []
+        with open(path, "r") as f:
+            lines = f.readlines()
+
+        for i in range(min(self.n_img, len(lines))):
+            line = lines[i]
+            values = list(map(float, line.strip().split()))
+            # KITTI poses are 3x4, need to add [0,0,0,1] row
+            pose = np.eye(4)
+            pose[:3, :] = np.array(values).reshape(3, 4)
+            # Store inverse pose (camera-to-world -> world-to-camera)
+            inv_pose = np.linalg.inv(pose)
+            self.poses.append(inv_pose)
+            frame = {
+                "file_path": self.color_paths[i],
+                "transform_matrix": inv_pose.tolist(),
+            }
+            self.frames.append(frame)
+
+        # If we have more images than poses, use last pose
+        while len(self.poses) < self.n_img:
+            self.poses.append(self.poses[-1] if self.poses else np.eye(4))
+            self.frames.append(self.frames[-1] if self.frames else
+                             {"file_path": self.color_paths[len(self.poses)-1],
+                              "transform_matrix": np.eye(4).tolist()})
+
+
 class ReplicaParser:
     def __init__(self, input_folder):
         self.input_folder = input_folder
@@ -433,7 +482,20 @@ class WaymoDataset(MonocularDataset):
         self.num_imgs = parser.n_img
         self.color_paths = parser.color_paths
         self.depth_paths = parser.depth_paths
-        self.poses = parser.poses      
+        self.poses = parser.poses
+
+
+class KITTIDataset(MonocularDataset):
+    """KITTI Odometry dataset for monocular SLAM."""
+    def __init__(self, args, path, config):
+        super().__init__(args, path, config)
+        dataset_path = config["Dataset"]["dataset_path"]
+        pose_file = config["Dataset"].get("pose_file", None)
+        parser = KITTIParser(dataset_path, pose_file=pose_file)
+        self.num_imgs = parser.n_img
+        self.color_paths = parser.color_paths
+        self.depth_paths = parser.depth_paths if parser.depth_paths else []
+        self.poses = parser.poses
 
 
 class TUMDataset(MonocularDataset):  
@@ -573,5 +635,7 @@ def load_dataset(args, path, config):
         return RealsenseDataset(args, path, config)
     elif config["Dataset"]["type"] == "waymo":
         return WaymoDataset(args, path, config)
+    elif config["Dataset"]["type"] == "kitti":
+        return KITTIDataset(args, path, config)
     else:
         raise ValueError("Unknown dataset type")

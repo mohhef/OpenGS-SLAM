@@ -1,11 +1,17 @@
+# Python
+*.pyc
 __pycache__/
-*.py[cod]
+*.egg-info/
 
-.ipynb_checkpoints/
+# Build artifacts
+build/
+*.so
 
-preprocess/
+# Data and results
+checkpoints/
+datasets/
+results/
 
-*.log
-*.tmp
-*.swp
-*.DS_Store
+# IDE
+.vscode/
+.idea/
