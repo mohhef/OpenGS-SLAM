@@ -1,17 +1,24 @@
-# Python
-*.pyc
 __pycache__/
-*.egg-info/
+*.py[cod]
+
+.ipynb_checkpoints/
+
+preprocess/
+
+*.log
+*.tmp
+*.swp
+*.DS_Store
 
 # Build artifacts
 build/
 *.so
+*.egg-info/
 
-# Data and results
+# Data and outputs
 checkpoints/
 datasets/
 results/
 
-# IDE
-.vscode/
-.idea/
+# Custom configs
+configs/mono/kitti/
