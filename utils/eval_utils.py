@@ -28,18 +28,21 @@ from utils.logging_utils import Log
 
 # Use evo to evaluate the alignment between the estimated trajectory and the Ground Truth trajectory, calculate ATE, and plot the trajectory
 def evaluate_evo(poses_gt, poses_est, plot_dir, label, monocular=False):
+    import copy
     ## Plot
     traj_ref = PosePath3D(poses_se3=poses_gt)
     traj_est = PosePath3D(poses_se3=poses_est)
-    traj_est_aligned = trajectory.align_trajectory(
-        traj_est, traj_ref, correct_scale=monocular
-    )
+    # evo >= 1.20: align() returns (r, t, s), need to apply transform manually
+    r, t, s = traj_est.align(traj_ref, correct_scale=monocular)
+    transform = np.eye(4)
+    transform[:3, :3] = s * r
+    transform[:3, 3] = t
+    traj_est_aligned = copy.deepcopy(traj_est)
+    traj_est_aligned.transform(transform)
     ## RMSE
     pose_relation = metrics.PoseRelation.translation_part
-    data = (traj_ref, traj_est_aligned)
-    #data = (traj_ref, traj_est)
     ape_metric = metrics.APE(pose_relation)
-    ape_metric.process_data(data)
+    ape_metric.process_data((traj_ref, traj_est_aligned))
     ape_stat = ape_metric.get_statistic(metrics.StatisticsType.rmse)
     ape_stats = ape_metric.get_all_statistics()
     Log("RMSE ATE \[m]", ape_stat, tag="Eval")

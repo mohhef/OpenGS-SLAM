@@ -1,0 +1,79 @@
+name: opengs-slam
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy=1.26.4
+  - scipy
+  - matplotlib
+  - pandas
+  - networkx
+  - sympy
+  - pillow
+  - tqdm
+  - pyyaml
+  - ffmpeg
+  - cvxpy
+  - tbb
+  - glib
+  - gmpy2
+  # PyTorch with CUDA 11.8
+  - pytorch::pytorch=2.1.0=py3.11_cuda11.8_cudnn8.7.0_0
+  - pytorch::torchvision=0.16.0
+  - pytorch::torchaudio=2.1.0
+  # Minimal CUDA runtime (avoid full toolkit CCCL issues)
+  - nvidia::cuda-cudart=11.8.*
+  - nvidia::cuda-nvrtc=11.8.*
+  - nvidia::cuda-nvtx=11.8.*
+  # Standalone CUB and Thrust from conda-forge (classic headers without CCCL)
+  - conda-forge::cub=1.16.0
+  - conda-forge::thrust=1.16.0
+  # GCC 10.x for CUDA 11.8 compatibility
+  - conda-forge::gcc=10
+  - conda-forge::gxx=10
+
+  - pip:
+      - opencv-python-headless==4.8.1.78
+      - absl-py
+      - addict
+      - configargparse
+      - einops
+      - evo
+      - ffmpy
+      - freetype-py
+      - glfw
+      - gradio
+      - gradio-client
+      - huggingface-hub
+      - imageio
+      - imgviz
+      - kapture
+      - kapture-localization
+      - lpips
+      - munch
+      - numpy-quaternion
+      - open3d
+      - piexif
+      - pillow-heif
+      - plotly
+      - plyfile
+      - poselib
+      - pyglm
+      - pyglet==1.5.29
+      - pyopengl
+      - pyquaternion
+      - pyrender
+      - python-dotenv
+      - roma
+      - scikit-learn
+      - seaborn
+      - tensorboard
+      - tenacity
+      - torchmetrics
+      - trimesh
+      - typer
+      - wandb

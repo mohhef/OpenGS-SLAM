@@ -1,0 +1,76 @@
+name: opengs-slam
+channels:
+  - pytorch
+  - nvidia/label/cuda-11.8.0
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.26.4
+  - scipy
+  - matplotlib
+  - pandas
+  - networkx
+  - sympy
+  - pillow
+  - tqdm
+  - pyyaml
+  - ffmpeg
+  - cvxpy
+  - tbb
+  - glib
+  - gmpy2
+  - ninja
+  # PyTorch with CUDA 11.8 from pytorch channel
+  - pytorch::pytorch=2.1.0=py3.10_cuda11.8_cudnn8.7.0_0
+  - pytorch::torchvision=0.16.0=py310_cu118
+  - pytorch::torchaudio=2.1.0=py310_cu118
+  # Full CUDA toolkit 11.8 (pinned to avoid newer versions with CCCL)
+  - nvidia/label/cuda-11.8.0::cuda-toolkit
+  # GCC 11 works with CUDA 11.8
+  - conda-forge::gxx_linux-64=11
+  - conda-forge::gcc_linux-64=11
+
+  - pip:
+      - opencv-python-headless==4.8.1.78
+      - absl-py
+      - addict
+      - configargparse
+      - einops
+      - evo
+      - ffmpy
+      - freetype-py
+      - glfw
+      - gradio
+      - gradio-client
+      - huggingface-hub
+      - imageio
+      - imgviz
+      - kapture
+      - kapture-localization
+      - lpips
+      - munch
+      - numpy-quaternion
+      - open3d
+      - piexif
+      - pillow-heif
+      - plotly
+      - plyfile
+      - poselib
+      - pyglm
+      - pyglet==1.5.29
+      - pyopengl
+      - pyquaternion
+      - pyrender
+      - python-dotenv
+      - roma
+      - scikit-learn
+      - seaborn
+      - tensorboard
+      - tenacity
+      - torchmetrics
+      - trimesh
+      - typer
+      - wandb
