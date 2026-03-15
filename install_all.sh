@@ -103,8 +103,8 @@ if [ "$USE_DOCKER" = true ]; then
     echo "  docker run --gpus all -v /path/to/data:/data -v /path/to/output:/output \\"
     echo "    opengs-slam:latest python slam.py --config /data/config.yaml"
     echo ""
-    echo "Or use SLAMPerturbationLab integration:"
-    echo "  python -m slamperturbationlab evaluate configs/experiment.yaml --slam opengsslam"
+    echo "Or use SLAMAdverserialLab integration:"
+    echo "  python -m slamadverseriallab evaluate configs/experiment.yaml --slam opengsslam"
 
 else
     # Conda installation
@@ -203,8 +203,8 @@ else
     echo "  conda activate opengs-slam"
     echo "  python slam.py --config configs/mono/tum/freiburg1_desk.yaml"
     echo ""
-    echo "Or use SLAMPerturbationLab integration:"
-    echo "  python -m slamperturbationlab evaluate configs/experiment.yaml --slam opengsslam"
+    echo "Or use SLAMAdverserialLab integration:"
+    echo "  python -m slamadverseriallab evaluate configs/experiment.yaml --slam opengsslam"
 fi
 
 echo ""

@@ -3,7 +3,7 @@
 
 FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-devel
 
-LABEL maintainer="SLAMPerturbationLab"
+LABEL maintainer="SLAMAdverserialLab"
 LABEL description="OpenGS-SLAM: RGB-Only Gaussian Splatting SLAM for Unbounded Outdoor Scenes"
 
 # Avoid interactive prompts during package installation
